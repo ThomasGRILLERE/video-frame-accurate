@@ -1,0 +1,32 @@
+.vid-controls{
+	background:#484848;
+	height:31px;
+}
+
+.play-btn{
+	background: url('../images/artpack.png');
+	background-repeat: no-repeat;
+	width : 50px;
+	height:31px;
+	cursor: pointer;
+	float:left;
+}
+
+.play{
+	background-position: 0 0;
+}
+
+.volume-wrapper{
+	width:50px;
+}
+
+.bar-wrapper{
+	background: #353535;
+	height:31px;
+	float:left;
+}
+
+.buffer-bar{
+	background: #ccc;
+	height:31px;
+}
