@@ -1,19 +1,176 @@
-.vid-controls{
-	background:#484848;
-	height:31px;
+body{
+	background: #333333
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+#video-wrapper{
+	float:left;
+	margin-top:50px;
+}
+
+#comment-wrapper{
+	width:430px;
+	height:100%;
+	background:#292929;
+	right:0;
+	position:absolute;
 }
 
 .play-btn{
 	background: url('../images/artpack.png');
 	background-repeat: no-repeat;
-	width : 50px;
-	height:31px;
+	height:21px;
 	cursor: pointer;
 	float:left;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
-.play{
+.ui-slider .ui-slider-handle{
+	background: url('../images/artpack.png');
+	background-repeat: no-repeat;
+	width:5px;
+	height:30px;
+	background-position: -255px 0;
+	z-index:2;
+	position: absolute;
+	outline: none;
+}
+
+.back-image{
 	background-position: 0 0;
+	width :54px;
+}
+
+.progress-bar{
+	height:30px;
+	position: relative;
+    text-align: left;
+}
+
+.progress-bar .ui-slider-range{
+	background:#a6ce39;
+    border: 0 none;
+    display: block;
+    position: absolute;
+    z-index: 1;
+    height:1px;
+}
+
+.back-play{
+	background-position: -54px 0;
+	width :51px;
+}
+
+.pause{
+	background-position: -105px 0;
+	width :45px;
+}
+
+.forward-play{
+	background-position: -150px 0;
+	width :49px;
+}
+
+.forward-image{
+	background-position: -198px 0;
+	width :57px;
+}
+
+.back-image.hover{
+	background-position: 0 -26px;
+	width :54px;
+}
+
+.back-play.hover{
+	background-position: -54px -26px;
+	width :51px;
+}
+
+.pause.hover{
+	background-position: -105px -26px;
+	width :45px;
+}
+
+.forward-play.hover{
+	background-position: -150px -26px;
+	width :49px;
+}
+
+.forward-image.hover{
+	background-position: -198px -26px;
+	width :57px;
+}
+
+.back-image.active{
+	background-position: 0 -57px;
+	width :54px;
+	height: 31px;
+    margin-top: -4px;
+}
+
+.back-play.active{
+	background-position: -54px -57px;
+	width :51px;
+	height: 31px;
+    margin-top: -4px;
+}
+
+.pause.active{
+	background-position: -105px -57px;
+	width :45px;
+	height: 31px;
+    margin-top: -4px;
+}
+
+.forward-play.active{
+	background-position: -150px -57px;
+	width :49px;
+	height: 31px;
+    margin-top: -4px;
+}
+
+.forward-image.active{
+	background-position: -198px -57px;
+	width :57px;
+	height: 31px;
+    margin-top: -4px;
+}
+
+.control-container{
+	text-align:center;
+	background: #333;
+	margin: 10px auto;
+	width:256px;
+	height : 35px;
+}
+
+.vid-controls{
+	text-align: center
 }
 
 .volume-wrapper{
@@ -21,12 +178,30 @@
 }
 
 .bar-wrapper{
-	background: #353535;
+	background: #333333;
 	height:31px;
 	float:left;
 }
 
 .buffer-bar{
-	background: #ccc;
-	height:31px;
+	background: #484848;
+	height:30px;
+	float:left;
+	border:1px solid #333333;
+}
+
+#vid{
+	background: #000;
+}
+
+.time{
+	width:91px;
+	background: #484848;
+	height : 30px;
+	color:#fff;
+	font-family:helvetica, arial, sans-serif;
+	font-size:14px;
+	float:left;
+	line-height: 31px;
+	border:1px solid #333333;
 }

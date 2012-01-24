@@ -2,44 +2,189 @@ Video =
 {
 	controlWidth : null,
 	
-	
 	Init : $(document).ready(function()
 	{
 		FPS = 25;
 		_vidWrapper  = $("video");
 		_video 	 	 = $("video")[0];
-				
-		Video.CreateElement();
-		Video.UpdateBuffer();
+		Reverse 	 = null;
+		Play		 = null;
 		
-		_video.addEventListener('play',Video.CheckTimeCode,false)
+		Video.CreateElement();
+
+		_backImage.click(function(){
+			Video.StepBackward();
+		});
+		
+		_backPlay.click(function(){
+			Video.PlayBackward();
+		});
+		
+		_pause.click(function(){
+			Video.Pause();
+			Video.ResetActiveClass();
+			Video.SetActive(_pause);
+		});
+		
+		_forwardPlay.click(function(){
+			Video.PlayForward();
+		});
+		
+		_forwardImage.click(function(){
+			Video.StepForward();
+		});	
+		
+		_video.addEventListener('timeupdate',function(){
+			Video.CurrentTimeSlide();
+			Video.Time();
+		},false);
 	}),
+	
+	Time : function()
+	{
+		_tp = Video.SecondsToTimecode(_video.currentTime, FPS);
+		_td = Video.SecondsToTimecodeLeft(_video.currentTime, _video.duration, FPS);
+		_timePlayed.html(_tp);
+		_timeLeft.html(_td);
+	},
+	
+	ResetActiveClass : function()
+	{
+			_commonButton.removeClass("active");
+	},
+	
+	ResetHoverClass : function()
+	{
+			_commonButton.removeClass("hover");
+	},
+	
+	SetActive : function(_el)
+	{
+		_el.addClass("active");
+	},
+	
+	StepBackward : function()
+	{
+		Video.ResetActiveClass();
+		Video.SetActive(_backImage);
+		Video.Pause();
+		_video.currentTime -= 1/FPS;
+	},
+	
+	PlayBackward : function()
+	{
+		Video.ResetActiveClass();
+		Video.SetActive(_backPlay);
+		Video.Pause();
+		Reverse = setInterval("Video.Reverse()", FPS);
+	},
+	
+	Reverse : function()
+	{
+		_video.currentTime -= 0.025;
+	},
+	
+	Pause : function()
+	{
+		clearInterval(Reverse);
+		clearInterval(Play);
+	},
+	
+	PlayForward : function()
+	{	
+		Video.ResetActiveClass();
+		Video.SetActive(_forwardPlay);
+		Video.Pause();
+		Play = setInterval("Video.Play()", FPS);
+	},
+	
+	Play : function()
+	{
+		_video.currentTime += 0.02997;
+	},
+	
+	StepForward : function()
+	{	
+		Video.ResetActiveClass();
+		Video.SetActive(_forwardImage);
+		Video.Pause();
+		_video.currentTime += 1/FPS;
+	},
+	
+	CurrentTimeSlide : function()
+	{
+		_slideValue = parseInt((_video.currentTime / _video.duration) * _barWidth);
+		_slider.slider("value", _slideValue);
+	},
 	
 	CreateElement : function()
 	{
+		//create button-controls
 		_controls	 = '<div class="vid-controls">';
-		_controls 	+= '<div class="play-btn play">&nbsp;</div>';
-		_controls 	+= '<div class="bar-wrapper"><div class="buffer-bar"></div>';
-		_controls 	+= '<div class="progress-bar"></div></div>';
+		_controls 	+= '<div class="control-container clearfix"><div class="play-btn back-image">&nbsp;</div><div class="play-btn back-play">&nbsp;</div><div class="play-btn pause active">&nbsp;</div><div class="play-btn forward-play">&nbsp;</div><div class="play-btn forward-image">&nbsp;</div></div>';
+		_controls 	+= '<div class="bar-wrapper"><div class="time" id="t-played">00:00:00:00</div><div class="buffer-bar">';
+		_controls 	+= '<div class="progress-bar"></div></div><div class="time" id="t-left">00:00:00:00</div></div>';
 		_controls 	+= '<div class="volume-wrapper"><div class="volume-btn unmute">&nbsp;</div>';
 		_controls 	+= '<div class="volume-bar"></div></div>';
 		_controls 	+= '</div>';
 		
 		_vidWrapper.after(_controls);
 		
+		_timePlayed			= $("#t-played");
+		_timeLeft			= $("#t-left");
+		_windowWidth		= $(document).width();
+		_commentWidth		= $("#comment-wrapper").width();
+		_videoWrapper		= $("video");
 		_controlsWrapper 	= $(".vid-controls");
-		_playButton 		= $(".play-btn");
+		_buttonsWrapper		= $(".control-container");
+		_timeContainer		= $(".time");
 		_volumeWrapper 		= $(".volume-wrapper");
+		_commonButton		= $(".play-btn");
 		_barWrapper			= $(".bar-wrapper");
 		_bufferBar			= $(".buffer-bar");
 		_progressBar		= $(".progress-bar");
-		
+		_backImage			= $(".back-image");
+		_backPlay			= $(".back-play");
+		_pause				= $(".pause");
+		_forwardPlay		= $(".forward-play");
+		_forwardImage		= $(".forward-image");
+
 		//set styles
-		_vidWidth = _vidWrapper.width()
-		_barWidth = _vidWidth - (_playButton.width() + _volumeWrapper.width());
+		_vidWrapperWidth = (_windowWidth - _commentWidth)-20;
+		_vidWrapper.css({'width':_vidWrapperWidth});
+		_barWidth = _vidWrapperWidth - (_timeContainer.outerWidth() * 2) - 4;
 		
-		_controlsWrapper.css({'width' : _vidWidth});
-		_barWrapper.css({'width' : _barWidth});		
+		_controlsWrapper.css({'width' :_vidWrapperWidth});
+		_bufferBar.css({'width' : _barWidth});
+		_slider = _progressBar.slider({
+			min : 0,
+			max : _barWidth,
+			range : "min",
+			slide : function(event, ui)
+			{
+				Video.Pause();
+				_slideValue = (ui.value / _barWidth) * _video.duration;
+				_video.currentTime = _slideValue;
+				Video.ResetActiveClass();
+			}
+		});	
+		
+		//hover bouton
+		_commonButton.mouseenter(function()
+		{
+			if($(this).hasClass("active"))
+			{			
+			}
+			else
+			{
+				Video.ResetHoverClass();
+				$(this).addClass("hover");
+			}
+		});
+		_commonButton.mouseleave(function()
+		{
+				Video.ResetHoverClass();
+		});
 	},
 	
 	UpdateBuffer : function()
@@ -53,18 +198,7 @@ Video =
 			_buffered = ( _buffer.end(0) / _video.duration) * _barWidth;
 			_bufferBar.css({'width':_buffered});
 	},
-	
-	CheckTimeCode : function()
-	{
-		setInterval("Video.TC()", FPS)
-	},
-	
-	TC : function()
-	{
-		var tctc = Video.SecondsToTimecode(_video.currentTime, FPS);
-		$("#current").html(tctc);
-	},
-	
+		
 	/*----------*/
 	/* TIMECODE */
 	/*----------*/
@@ -80,6 +214,22 @@ Video =
 		var tc_in_seconds = ( tc_hh * 3600 ) + ( tc_mm * 60 ) + tc_ss + ( tc_ff / fps );
 		
 		return tc_in_seconds;
+	},
+	
+	SecondsToTimecodeLeft : function(time, duration, fps)
+	{
+		_leftTimecode = duration - time;
+		var hours = Math.floor(_leftTimecode / 3600) % 24;
+		var minutes = Math.floor(_leftTimecode / 60) % 60;
+		var seconds = Math.floor(_leftTimecode % 60);
+		var frames = Math.floor(((_leftTimecode % 1)*fps).toFixed(3));
+		
+		var result = (hours < 10 ? "0" + hours : hours) + ":"
+		+ (minutes < 10 ? "0" + minutes : minutes) + ":"
+		+ (seconds < 10 ? "0" + seconds : seconds) + ":"
+		+ (frames < 10 ? "0" + frames : frames);
+	
+		return result;
 	},
 	
 	SecondsToTimecode : function(time, fps)
