@@ -11,7 +11,13 @@ Video =
 		Play		 = null;
 		
 		Video.CreateElement();
-
+		
+		_video.addEventListener('loadedmetadata',function(){
+			console.log("!! MEDIA_DATA_LOADED !!")
+		},false);
+		
+		_video.addEventListener('progress',Video.GetBuffer,false);
+				
 		_backImage.click(function(){
 			Video.StepBackward();
 		});
@@ -34,10 +40,10 @@ Video =
 			Video.StepForward();
 		});	
 		
-		_video.addEventListener('timeupdate',function(){
+		setInterval(function(){
 			Video.CurrentTimeSlide();
 			Video.Time();
-		},false);
+		},FPS);
 	}),
 	
 	Time : function()
@@ -50,12 +56,12 @@ Video =
 	
 	ResetActiveClass : function()
 	{
-			_commonButton.removeClass("active");
+		_commonButton.removeClass("active");
 	},
 	
 	ResetHoverClass : function()
 	{
-			_commonButton.removeClass("hover");
+		_commonButton.removeClass("hover");
 	},
 	
 	SetActive : function(_el)
@@ -81,13 +87,13 @@ Video =
 	
 	Reverse : function()
 	{
-		_video.currentTime -= 0.025;
+		_video.currentTime -= .025;
 	},
 	
 	Pause : function()
 	{
 		clearInterval(Reverse);
-		clearInterval(Play);
+		_video.pause();
 	},
 	
 	PlayForward : function()
@@ -95,12 +101,7 @@ Video =
 		Video.ResetActiveClass();
 		Video.SetActive(_forwardPlay);
 		Video.Pause();
-		Play = setInterval("Video.Play()", FPS);
-	},
-	
-	Play : function()
-	{
-		_video.currentTime += 0.02997;
+		_video.play();
 	},
 	
 	StepForward : function()
@@ -122,7 +123,8 @@ Video =
 		//create button-controls
 		_controls	 = '<div class="vid-controls">';
 		_controls 	+= '<div class="control-container clearfix"><div class="play-btn back-image">&nbsp;</div><div class="play-btn back-play">&nbsp;</div><div class="play-btn pause active">&nbsp;</div><div class="play-btn forward-play">&nbsp;</div><div class="play-btn forward-image">&nbsp;</div></div>';
-		_controls 	+= '<div class="bar-wrapper"><div class="time" id="t-played">00:00:00:00</div><div class="buffer-bar">';
+		_controls 	+= '<div class="bar-wrapper"><div class="time" id="t-played">00:00:00:00</div>',
+		_controls 	+= '<div class="playing-bar"><div class="buffer-bar"></div>';
 		_controls 	+= '<div class="progress-bar"></div></div><div class="time" id="t-left">00:00:00:00</div></div>';
 		_controls 	+= '<div class="volume-wrapper"><div class="volume-btn unmute">&nbsp;</div>';
 		_controls 	+= '<div class="volume-bar"></div></div>';
@@ -142,6 +144,7 @@ Video =
 		_commonButton		= $(".play-btn");
 		_barWrapper			= $(".bar-wrapper");
 		_bufferBar			= $(".buffer-bar");
+		_playingBar			= $(".playing-bar")
 		_progressBar		= $(".progress-bar");
 		_backImage			= $(".back-image");
 		_backPlay			= $(".back-play");
@@ -155,7 +158,7 @@ Video =
 		_barWidth = _vidWrapperWidth - (_timeContainer.outerWidth() * 2) - 4;
 		
 		_controlsWrapper.css({'width' :_vidWrapperWidth});
-		_bufferBar.css({'width' : _barWidth});
+		_playingBar.css({'width' : _barWidth});
 		_slider = _progressBar.slider({
 			min : 0,
 			max : _barWidth,
@@ -186,14 +189,10 @@ Video =
 				Video.ResetHoverClass();
 		});
 	},
-	
-	UpdateBuffer : function()
-	{
-		_video.addEventListener('progress',Video.GetBuffer,false);
-	},
-	
+
 	GetBuffer : function()
 	{
+			console.log("VIDEO_BUFFERING");
 			_buffer = _video.buffered;
 			_buffered = ( _buffer.end(0) / _video.duration) * _barWidth;
 			_bufferBar.css({'width':_buffered});

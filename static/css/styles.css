@@ -72,6 +72,12 @@ html[xmlns] .clearfix {
     text-align: left;
 }
 
+.playing-bar{
+	height:30px;
+	float:left;
+	border:1px solid #484848;
+}
+
 .progress-bar .ui-slider-range{
 	background:#a6ce39;
     border: 0 none;
@@ -187,7 +193,6 @@ html[xmlns] .clearfix {
 	background: #484848;
 	height:30px;
 	float:left;
-	border:1px solid #333333;
 }
 
 #vid{
@@ -203,5 +208,6 @@ html[xmlns] .clearfix {
 	font-size:14px;
 	float:left;
 	line-height: 31px;
-	border:1px solid #333333;
+	border:1px solid #484848;
+	border-right : 1px solid #333;
 }
